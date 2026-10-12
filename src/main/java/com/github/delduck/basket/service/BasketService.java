@@ -19,8 +19,8 @@ public class BasketService {
     private final BasketRepository basketRepository;
     private final ProductService productService;
 
-    public Basket getBasketById(String id) {
-        return basketRepository.findById(id)
+    public Basket getBasketById(String idBasket) {
+        return basketRepository.findById(idBasket)
                 .orElseThrow(() -> new IllegalArgumentException("Basket not found"));
     }
 
@@ -52,6 +52,31 @@ public class BasketService {
 
         basket.calculateTotalPrice();
         return basketRepository.save(basket);
+    }
+
+    public Basket updateBasketById(String idBasket, BasketRequest basketRequest) {
+        Basket savedBasket = getBasketById(idBasket);
+
+        if (savedBasket.getStatus() != Status.OPEN) {
+            throw new IllegalArgumentException("Only open baskets can be updated");
+        }
+
+        List<Product> products = new ArrayList<>();
+        basketRequest.products().forEach(productRequest -> {
+            FakeStoreProductResponse productById = productService.getProductById(productRequest.id());
+            products.add(Product.builder()
+                    .id(productById.id())
+                    .title(productById.title())
+                    .price(productById.price())
+                    .quantity(productRequest.quantity())
+                    .build());
+        });
+
+        savedBasket.setProducts(products);
+        savedBasket.calculateTotalPrice();
+
+        return basketRepository.save(savedBasket);
+
     }
 
 }
