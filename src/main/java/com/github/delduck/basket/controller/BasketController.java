@@ -1,6 +1,7 @@
 package com.github.delduck.basket.controller;
 
 import com.github.delduck.basket.controller.request.BasketRequest;
+import com.github.delduck.basket.controller.request.PaymentRequest;
 import com.github.delduck.basket.entity.Basket;
 import com.github.delduck.basket.service.BasketService;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +30,15 @@ public class BasketController {
     @PutMapping("/{idBasket}")
     public ResponseEntity<Basket> updateBasketById(@PathVariable String idBasket,
                                                    @RequestBody BasketRequest basket) {
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(basketService.updateBasketById(idBasket, basket));
+    }
+
+    @PutMapping("/{idBasket}/payment")
+    public ResponseEntity<Basket> payBasketById(@PathVariable String idBasket,
+                                                @RequestBody PaymentRequest paymentRequest) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(basketService.payBasket(idBasket, paymentRequest));
     }
 
 

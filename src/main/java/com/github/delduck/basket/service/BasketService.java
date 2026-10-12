@@ -2,6 +2,7 @@ package com.github.delduck.basket.service;
 
 import com.github.delduck.basket.client.response.FakeStoreProductResponse;
 import com.github.delduck.basket.controller.request.BasketRequest;
+import com.github.delduck.basket.controller.request.PaymentRequest;
 import com.github.delduck.basket.entity.Basket;
 import com.github.delduck.basket.entity.Product;
 import com.github.delduck.basket.entity.Status;
@@ -78,5 +79,13 @@ public class BasketService {
         return basketRepository.save(savedBasket);
 
     }
+
+    public Basket payBasket(String idBasket, PaymentRequest paymentRequest) {
+        Basket savedBasket = getBasketById(idBasket);
+        savedBasket.setPaymentMethod(paymentRequest.paymentMethod());
+        savedBasket.setStatus(Status.SOLD);
+        return basketRepository.save(savedBasket);
+    }
+
 
 }
